@@ -26,6 +26,11 @@ Otherwise use pip to install the requirements
 
 ```pip install requirements.txt ```
 
+Then unzip the data 
+
+
+```unzip data.zip```
+
 ## Run predictions:
 
 There is a trained model available for plug and play use. Just do
@@ -87,6 +92,24 @@ Explain an open issue:
 
 
 ```http://127.0.0.1:5000/api/issue/AVRO-2167/explain-prediction```
+
+
+## Train a new model
+
+To train a new model is as simple as
+
+```python data_stuff.py```
+
+Use the following arguments
+* ```--verbose``` Defines if messages will be printed;
+* ```--pretrained``` Uses the pretrained model;
+* ```--data_path``` path to folder containing the data files. Helper files will also be saved in this folder.
+* ```--train_data_file``` name of csv file inside data_path containing the training data with the needed features. For the assignment this is the avro-transitions.csv. If you want to use another file, make sure that the following fields are included: "key", "status", "from_status", "to_status", "days_in_from_status", "days_since_open", "days_in_current_status", "vote_count", "comment_count", "watch_count", "description_length", "summary_length";
+* ```--retrieve_data_file``` name of csv file containing the tickets and the needed features. For the assigment this is the avro-issues.csv;
+* ```--labels``` name of csv file containing the days to resolution of each data point in train_data_file. If not given, the labels will be automatically calculated from --train_data_file and saved in data_path as labels.csv;
+* ```--model_path``` path to folder containing the models, and where models will be saved;
+* ```--model_name``` name of the model to be trained, it is saved as pickle in model_path.
+
 
 Have fun!
 
