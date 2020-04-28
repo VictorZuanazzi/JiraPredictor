@@ -7,7 +7,7 @@ Implementation for the Jira Prediction Assignment of Xccelerated.
 
 First, clone this repository:
 
-```git clone _____ ``` 
+```git clone https://github.com/VictorZuanazzi/JiraPredictor.git ``` 
 
 You will need the following python packages:
 * flask
