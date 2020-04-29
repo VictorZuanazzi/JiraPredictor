@@ -1,17 +1,48 @@
 from datetime import datetime
 from flask import Flask
 from flask_jsonpify import jsonify
+import argparse
 
 # my imports
 from data_stuff import GeneralAI
 
+# args
+parser = argparse.ArgumentParser(description='Create a Jira resolution forecaster')
+
+parser.add_argument('--verbose', action="store_true", default=False,
+                    help='Defines if messages will be printed.')
+parser.add_argument('--train_new', action="store_true", default=False,
+                    help='Uses the pretrained model.')
+parser.add_argument('--data_path', type=str, default='./data/',
+                    help='path to folder containing the data files. Helper files will also be saved in this folder.')
+parser.add_argument("--train_data_file", type=str, default='avro-transitions.csv',
+                    help='name of csv file inside data_path containing the training data with the needed features.')
+parser.add_argument("--retrieve_data_file", type=str, default='avro-issues.csv',
+                    help='name of csv file containing the tickets and the needed features')
+parser.add_argument("--labels", type=str, default='labels.csv',
+                    help='name of csv file containing the days to resolution of each data point in train_data_file.')
+parser.add_argument("--model_path", type=str, default='./model/',
+                    help='path to folder containing the models, and where models will be saved.')
+parser.add_argument("--model_name", type=str, default='forest.pickle',
+                    help='trained model saved as pickle in model_path.')
+parser.add_argument("--debug_mode", action="store_true", default=False)
+args = parser.parse_args()
+
+
 # initialize API
 app = Flask(__name__)
-app.config["DEBUG"] = True
+app.config["DEBUG"] = args.debug_mode
 
 # initialize the forecaster
 # it will load the pretrained model if that is saved, otherwise it will train a new one.
-forecaster = GeneralAI()  # it knows what is has to know already
+forecaster = GeneralAI(verbose=args.verbose,
+                       pretrained=not args.train_new,
+                       data_path=args.data_path,
+                       issues_csv_name=args.retrieve_data_file,
+                       transitions_csv_name=args.train_data_file,
+                       labels_csv_name=args.labels,
+                       model_path=args.model_path,
+                       model_name=args.model_name)
 
 # just some dummy issue for testing the API
 answer_dict = {'issue': 'AVRO-9999',
