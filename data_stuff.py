@@ -1,6 +1,7 @@
 import os
 from datetime import datetime
 from datetime import timedelta
+import argparse
 
 import numpy as np
 import pandas as pd
@@ -341,4 +342,35 @@ class GeneralAI:
 
 
 if __name__ == '__main__':
-    forecaster = GeneralAI(pretrained=False)
+
+    parser = argparse.ArgumentParser(description='Create a Jira resolution forecaster')
+
+    parser.add_argument('--verbose', action="store_true", default=False,
+                        help='Defines if messages will be printed.')
+    parser.add_argument('--pretrained', action="store_true", default=False,
+                        help='Uses the pretrained model.')
+    parser.add_argument('--data_path', type=str, default='./data/',
+                        help='path to folder containing the data files. Helper files will also be saved in this folder.')
+    parser.add_argument("--train_data_file", type=str, default='avro-transitions.csv',
+                        help='name of csv file inside data_path containing the training data with the needed features.')
+    parser.add_argument("--retrieve_data_file", type=str, default='avro-issues.csv',
+                        help='name of csv file containing the tickets and the needed features')
+    parser.add_argument("--labels", type=str, default='labels.csv',
+                        help='name of csv file containing the days to resolution of each data point in train_data_file.')
+    parser.add_argument("--model_path", type=str, default='./model/',
+                        help='path to folder containing the models, and where models will be saved.')
+    parser.add_argument("--model_name", type=str, default='forest.pickle',
+                        help='trained model saved as pickle in model_path.')
+    args = parser.parse_args()
+
+    forecaster = GeneralAI(verbose=args.verbose,
+                           pretrained=args.pretrained,
+                           data_path=args.data_path,
+                           issues_csv_name=args.retrieve_data_file,
+                           transitions_csv_name=args.train_data_file,
+                           labels_csv_name=args.labels,
+                           model_path=args.model_path,
+                           model_name=args.model_name)
+
+    if args.verbose:
+        print("DONE!")
