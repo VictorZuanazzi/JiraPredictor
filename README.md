@@ -9,7 +9,10 @@ First, clone this repository:
 
 ```git clone https://github.com/VictorZuanazzi/JiraPredictor.git ``` 
 
+```cd  path/to/JiraPredictor```
+
 You will need the following python packages:
+* python 3.8
 * flask
 * flask_jsonpify
 * numpy
@@ -19,7 +22,9 @@ You will need the following python packages:
 If you are using Anaconda, download and isntall the virtual environemnt
 
 
-```conda env create -f xcc.yml```
+```conda env create -f environment.yml```
+
+```conda activate xcc```
 
 Otherwise use pip to install the requirements
 
@@ -36,8 +41,8 @@ Then unzip the data
 There is a trained model available for plug and play use. Just do
 
 
-```cd  path/to/JiraPredictor```
 ```python main.py```
+
 
 Open your favorite browser and go to
 
@@ -63,12 +68,12 @@ The example of an open ticket:
 
 ### Retrieve all issues that should be finished before a date
 
-Go , use ISO-8601 or YYYY-MM-DD
+Go to:
 
 
 ```http://127.0.0.1:5000/api/issue/<date>/resolved-since-now```
   
-For example:
+Use dates in the format ISO-8601 or YYYY-MM-DD, for example:
 
 
 ```http://127.0.0.1:5000/api/issue/2020-07-15T01:31:58.182898/resolved-since-now```
@@ -98,17 +103,20 @@ Explain an open issue:
 
 To train a new model is as simple as
 
-```python data_stuff.py```
+```python main.py --train_new```
 
-Use the following arguments
+All the following arguments are optional, use ```-h``` for details on how to use them.
 * ```--verbose``` Defines if messages will be printed;
-* ```--pretrained``` Uses the pretrained model;
+* ```--train_new``` use it if  the pretrained model;
 * ```--data_path``` path to folder containing the data files. Helper files will also be saved in this folder.
 * ```--train_data_file``` name of csv file inside data_path containing the training data with the needed features. For the assignment this is the avro-transitions.csv. If you want to use another file, make sure that the following fields are included: "key", "status", "from_status", "to_status", "days_in_from_status", "days_since_open", "days_in_current_status", "vote_count", "comment_count", "watch_count", "description_length", "summary_length";
 * ```--retrieve_data_file``` name of csv file containing the tickets and the needed features. For the assigment this is the avro-issues.csv;
 * ```--labels``` name of csv file containing the days to resolution of each data point in train_data_file. If not given, the labels will be automatically calculated from --train_data_file and saved in data_path as labels.csv;
 * ```--model_path``` path to folder containing the models, and where models will be saved;
-* ```--model_name``` name of the model to be trained, it is saved as pickle in model_path.
+* ```--model_name``` name of the model to be trained, it is saved as pickle in model_path;
+* ```--debug_mode``` start the API in debug mode.
+
+
 
 
 Have fun!
